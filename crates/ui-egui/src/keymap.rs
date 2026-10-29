@@ -522,6 +522,16 @@ mod tests {
         b.chord = Chord { command: true, alt: false, shift: false, key: Key::J };
         assert_ne!(before, app.shortcuts_fingerprint());
         assert!(crate::RustGisApp::takes_browser_key(&app.command_keys(), "j", "KeyJ", true, false, false));
+        // The same key given another command, or other parameters, changes it too.
+        let moved = app.shortcuts_fingerprint();
+        let j = Chord { command: true, alt: false, shift: false, key: Key::J };
+        app.ui.keymap.assign(j, "select.clear", Value::Null);
+        let other_command = app.shortcuts_fingerprint();
+        assert_ne!(moved, other_command);
+        app.ui.keymap.assign(j, "tool.set", serde_json::json!({"tool": "select"}));
+        let with_params = app.shortcuts_fingerprint();
+        app.ui.keymap.assign(j, "tool.set", serde_json::json!({"tool": "measure"}));
+        assert_ne!(with_params, app.shortcuts_fingerprint());
     }
 
     #[test]
