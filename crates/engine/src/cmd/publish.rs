@@ -80,6 +80,7 @@ pub(crate) fn publish_work(s: &Session, p: &Value) -> Result<super::exports::Wor
                     written_path: None,
                     then: None,
                     owner: None,
+                    crs_used: Vec::new(),
                 });
             }
             let published = rustgis_data::publish::shapefile(&dataset, std::path::Path::new(&path), &synced).map_err(|e| e.to_string())?;
@@ -144,6 +145,7 @@ pub(crate) fn publish_work(s: &Session, p: &Value) -> Result<super::exports::Wor
                 written_path,
                 then: Some(then),
                 owner: None,
+                crs_used: Vec::new(),
             })
         }))
     }
